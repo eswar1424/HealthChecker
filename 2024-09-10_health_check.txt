@@ -1,0 +1,97 @@
+SERVER_NAME: productionserver1
+SERVER_IP: 13.235.135.36
+SERVICE: chronyd
+
+● chronyd.service - NTP client/server
+     Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; preset: enabled)
+    Drop-In: /usr/lib/systemd/system/chronyd.service.d
+             └─default-sources.conf
+     Active: active (running) since Thu 2024-08-22 05:24:48 UTC; 2 weeks 5 days ago
+       Docs: man:chronyd(8)
+             man:chrony.conf(5)
+    Process: 2194 ExecStartPre=/usr/bin/mkdir -p /run/chrony.d (code=exited, status=0/SUCCESS)
+    Process: 2195 ExecStartPre=/bin/sh -c [ -f /run/chrony.d/.configured ] || ln -s /usr/share/chrony/ntp-pool.sources /run/chrony.d/ (code=exited, status=0/SUCCESS)
+    Process: 2196 ExecStart=/usr/sbin/chronyd $OPTIONS (code=exited, status=0/SUCCESS)
+   Main PID: 2198 (chronyd)
+      Tasks: 1 (limit: 1112)
+     Memory: 4.0M
+        CPU: 38.840s
+     CGroup: /system.slice/chronyd.service
+             └─2198 /usr/sbin/chronyd -F 2
+
+Aug 22 05:24:48 ip-172-31-46-108.ap-south-1.compute.internal systemd[1]: Starting chronyd.service - NTP client/server...
+Aug 22 05:24:48 ip-172-31-46-108.ap-south-1.compute.internal chronyd[2198]: chronyd version 4.3 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP +SCFILTER +SIGND +ASYNCDNS +NTS +SECHASH +IPV6 +DEBUG)
+Aug 22 05:24:48 ip-172-31-46-108.ap-south-1.compute.internal chronyd[2198]: Loaded seccomp filter (level 2)
+Aug 22 05:24:48 ip-172-31-46-108.ap-south-1.compute.internal systemd[1]: Started chronyd.service - NTP client/server.
+Aug 22 05:24:53 ip-172-31-46-108.ap-south-1.compute.internal chronyd[2198]: Selected source 169.254.169.123
+
+
+SERVER_NAME: productionserver1
+SERVER_IP: 13.235.135.36
+SERVICE: atd
+
+● atd.service - Deferred execution scheduler
+     Loaded: loaded (/usr/lib/systemd/system/atd.service; enabled; preset: enabled)
+     Active: active (running) since Thu 2024-08-22 05:24:47 UTC; 2 weeks 5 days ago
+       Docs: man:atd(8)
+   Main PID: 2176 (atd)
+      Tasks: 1 (limit: 1112)
+     Memory: 312.0K
+        CPU: 57ms
+     CGroup: /system.slice/atd.service
+             └─2176 /usr/sbin/atd -f
+
+Aug 22 05:24:47 ip-172-31-46-108.ap-south-1.compute.internal systemd[1]: Started atd.service - Deferred execution scheduler.
+
+
+SERVER_NAME: productionserver2
+SERVER_IP: 65.2.11.12
+SERVICE: chronyd
+
+● chronyd.service - NTP client/server
+     Loaded: loaded (/usr/lib/systemd/system/chronyd.service; enabled; preset: enabled)
+    Drop-In: /usr/lib/systemd/system/chronyd.service.d
+             └─default-sources.conf
+     Active: active (running) since Mon 2024-08-26 05:24:52 UTC; 2 weeks 1 day ago
+       Docs: man:chronyd(8)
+             man:chrony.conf(5)
+    Process: 2197 ExecStartPre=/usr/bin/mkdir -p /run/chrony.d (code=exited, status=0/SUCCESS)
+    Process: 2198 ExecStartPre=/bin/sh -c [ -f /run/chrony.d/.configured ] || ln -s /usr/share/chrony/ntp-pool.sources /run/chrony.d/ (code=exited, status=0/SUCCESS)
+    Process: 2199 ExecStart=/usr/sbin/chronyd $OPTIONS (code=exited, status=0/SUCCESS)
+   Main PID: 2201 (chronyd)
+      Tasks: 1 (limit: 1112)
+     Memory: 4.2M
+        CPU: 26.923s
+     CGroup: /system.slice/chronyd.service
+             └─2201 /usr/sbin/chronyd -F 2
+
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal systemd[1]: Starting chronyd.service - NTP client/server...
+Aug 26 05:24:52 ip-172-31-40-27.ap-south-1.compute.internal chronyd[2201]: chronyd version 4.3 starting (+CMDMON +NTP +REFCLOCK +RTC +PRIVDROP +SCFILTER +SIGND +ASYNCDNS +NTS +SECHASH +IPV6 +DEBUG)
+Aug 26 05:24:52 ip-172-31-40-27.ap-south-1.compute.internal chronyd[2201]: Loaded seccomp filter (level 2)
+Aug 26 05:24:52 ip-172-31-40-27.ap-south-1.compute.internal systemd[1]: Started chronyd.service - NTP client/server.
+Aug 26 05:24:57 ip-172-31-40-27.ap-south-1.compute.internal chronyd[2201]: Selected source 169.254.169.123
+
+
+SERVER_NAME: productionserver2
+SERVER_IP: 65.2.11.12
+SERVICE: cloud-init
+
+● cloud-init.service - Initial cloud-init job (metadata service crawler)
+     Loaded: loaded (/usr/lib/systemd/system/cloud-init.service; enabled; preset: disabled)
+     Active: active (exited) since Mon 2024-08-26 05:24:51 UTC; 2 weeks 1 day ago
+    Process: 1993 ExecStart=/usr/bin/cloud-init init (code=exited, status=0/SUCCESS)
+   Main PID: 1993 (code=exited, status=0/SUCCESS)
+        CPU: 1.027s
+
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: | .o.o+ . = +     |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: |. ..=.B = +      |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: |.  o B * o       |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: | .. E = S .      |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: |. .o = .         |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: |oo. . +.         |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: |*+.  *o.         |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: |Oo. + oo         |
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal cloud-init[2119]: +----[SHA256]-----+
+Aug 26 05:24:51 ip-172-31-40-27.ap-south-1.compute.internal systemd[1]: Finished cloud-init.service - Initial cloud-init job (metadata service crawler).
+
+
