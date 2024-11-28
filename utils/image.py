@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw, ImageFont
-
+from datetime import datetime
+import os
 
 def getImageFromText(text,filename):
     # Define image size and background color
@@ -12,7 +13,6 @@ def getImageFromText(text,filename):
     # Initialize the drawing context
     draw = ImageDraw.Draw(image)
 
-    # Define text, font, and size
     
     font_size = 14
     font_color = (255,255,255)  # white
@@ -25,18 +25,31 @@ def getImageFromText(text,filename):
         font = ImageFont.load_default()
 
     # Calculate text size and position
-    text_width, text_height = draw.textsize(text, font=font)
+    #text_width, text_height = draw.textsize(text, font=font)
     text_x = 10
     text_y = 10
 
     # Draw text on the image
     draw.text((text_x, text_y), text, font=font, fill=font_color)
 
-    # Save the image
-    image_name = filename
-    image.save(image_name)
+    screenshots_folder_name = 'screenshots'
+
+    if not os.path.exists(screenshots_folder_name):
+        os.makedirs(screenshots_folder_name)
+
+    today_folder_name = datetime.now().strftime('%Y-%m-%d')
+    today_folder_path = os.path.join(screenshots_folder_name,today_folder_name)
+
+    if not os.path.exists(today_folder_path):
+        os.makedirs(today_folder_path)
+
+    image_path = os.path.join(today_folder_path,filename)
+
+    
+
+    image.save(image_path)
 
     # Read the image
-    image  = open(image_name,"rb").read()
+    image  = open(image_path,"rb").read()
 
     return image

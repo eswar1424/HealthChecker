@@ -1,23 +1,29 @@
 import paramiko
 import logging
 import csv
+import os
 from datetime import datetime
-from mail import sendImageMail
-from mail_composer import MailComposer
-from image import getImageFromText
-from tableBuilder  import TableBuilder
-from extractor import extractActiveStatus
+from mail.mail import sendImageMail
+from mail.mail_composer import MailComposer
+from utils.image import getImageFromText
+from mail.tableBuilder  import TableBuilder
+from utils.extractor import extractActiveStatus
+
 today = datetime.now()
 date_str = today.strftime('%Y-%m-%d')
 
+log_folder_name = 'logs'
+log_file_path = os.path.join(log_folder_name, f'{date_str}.log')
 
+if not os.path.exists(log_folder_name):
+    os.makedirs(log_folder_name)
 
 # Create a custom logger
 logger = logging.getLogger('Health Checker')
 logger.setLevel(logging.DEBUG)
 
 # Create a file handler for logging to a file
-file_handler = logging.FileHandler('my_log.log')
+file_handler = logging.FileHandler(log_file_path)
 file_handler.setLevel(logging.INFO)  # Set file handler to log only INFO and higher
 
 # Create a console handler for logging to the console
@@ -33,14 +39,34 @@ console_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
+
+
+screen_shot_folder_name = 'screenshots'
+
+
+if not os.path.exists(screen_shot_folder_name):
+    os.makedirs(screen_shot_folder_name)
+
+report_folder_name = 'reports'
+if not os.path.exists(report_folder_name):
+    os.makedirs(report_folder_name)
+
+report_file = os.path.join(report_folder_name,f'{date_str}_health_check.txt')
+
+
+
+config_folder = 'config'
+servers_list_filename = 'servers.csv'
+servers_list_file = os.path.join(config_folder,servers_list_filename)
+
 ssh = paramiko.SSHClient()
 
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
-file = csv.reader(open("servers.csv","r"))
+file = csv.reader(open(servers_list_file,"r"))
 logger.info("opened servers.csv file")
 
-outputfile = open(date_str+"_health_check.txt","w",encoding='utf-8')
+outputfile = open(report_file,"w",encoding='utf-8')
 logger.info("created an output file")
 next(file)
 
@@ -108,6 +134,7 @@ for server in file:
 
 outputfile.close()
 logger.info("closed the output file")
+
 table = table_builder.build()
 mail_composer = mail_composer.addTable(table)
 msg = mail_composer.build()

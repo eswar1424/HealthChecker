@@ -1,2 +1,5 @@
-servers.csv
-.env
+reports/
+screenshots/
+logs/
+config/.env
+config/servers.csv

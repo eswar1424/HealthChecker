@@ -5,7 +5,7 @@ from email.mime.image import MIMEImage
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+load_dotenv(dotenv_path='config/.env')
 
 TO_MAIL = os.getenv("TO_MAIL")
 FROM_MAIL = os.getenv("FROM_MAIL")
