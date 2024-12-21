@@ -172,5 +172,5 @@ if not kill:
     table = table_builder.build()
     mail_composer = mail_composer.addTable(table)
     msg = mail_composer.build()
-    #sendImageMail(msg)
+    sendImageMail(msg)
     logger.info("Sent the email")
