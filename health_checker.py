@@ -39,10 +39,7 @@ console_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
 
-
-
 screen_shot_folder_name = 'screenshots'
-
 
 if not os.path.exists(screen_shot_folder_name):
     os.makedirs(screen_shot_folder_name)
@@ -80,57 +77,85 @@ for server in file:
     user_name = server[2]
     password = server[3]
     services = server[4].split(",")
+    type = server[5]
 
-    ssh.connect(server_ip,22,user_name,password)
-    logger.info("connected to the" + server_name)
+    try:
+        ssh.connect(server_ip,22,user_name,password)
+        logger.info("connected to the" + server_name)
+    except TimeoutError:
+        logger.error(server_ip + " is Not reachable(please check wheather the server is online or not)")
+        continue
+    except paramiko.AuthenticationException:
+        logger.error("Authentication failed for " + server_ip + " (please check wheather the login credentials are correct or not)")
+        continue
 
-    for service in services:
-        logger.info("checking the status of " + service)
-        stdin,stdout,stderr = ssh.exec_command("sudo systemctl status "+service)
-        #print("SERVER: ",server_name)
-        service_status = stdout.read().decode()
-        #print(type(service_status))
 
+    if type == "status":
+        for service in services:
+            logger.info("checking the status of " + service)
+            stdin,stdout,stderr = ssh.exec_command("sudo systemctl status "+service)
+          
+            service_status = stdout.read().decode()
+            err_response = stderr.read().decode()
+
+            #print("STDOUT" + service_status)
+            #print("STDERR" + err_response)
+            if(len(service_status)==0):
+                logger.error(err_response + f" (Please check whether there is a service with the name {service} in {server_ip} )")
+                continue
+
+            new_line = "\n"
+
+            outputfile.write("SERVER_NAME: " + server_name)
+            outputfile.write("\n")
+            outputfile.write("SERVER_IP: " + server_ip)
+            outputfile.write("\n")
+            outputfile.write("SERVICE: " + service)
+            outputfile.write("\n")
+            outputfile.write("\n")
+
+            outputfile.write(service_status)
+            outputfile.write("\n")
+            outputfile.write("\n")
+
+            logger.info("written the status info into the output file")
+
+            server_details = ""
+
+            server_details += "SERVER_NAME: " + server_name + new_line
+            server_details += "SERVER_IP: " + server_ip + new_line
+            server_details += "SERVICE: " + service + new_line
+
+
+            active_status = extractActiveStatus(service_status)
+            table_builder.addRow(server_ip,service,active_status)
+
+            image = getImageFromText(service_status,server_ip + service+".png")
+            logger.info("Got image of service status")
+
+            mail_composer = mail_composer.addImage(image,service+"image",server_details)
+            logger.info("Added image to the mail")
+
+        ssh.close()
+        logger.info("Disconnected form "+ server_name)
+
+    elif type == "space":
+        logger.info("checking filesystem utilization of " + server_ip)
+        stdin,stdout,stderr = ssh.exec_command("df -h")
         
+        response = stdout.read().decode()
+        err_response = stderr.read().decode()
 
-        new_line = "\n"
+        #print(response)
 
-        outputfile.write("SERVER_NAME: " + server_name)
-        outputfile.write("\n")
-        outputfile.write("SERVER_IP: " + server_ip)
-        outputfile.write("\n")
-        outputfile.write("SERVICE: " + service)
-        outputfile.write("\n")
-        outputfile.write("\n")
+        image = getImageFromText(response,server_ip+".png")
+        logger.info("Got image of filesystem utilization")
 
-        outputfile.write(service_status)
-        outputfile.write("\n")
-        outputfile.write("\n")
-
-        logger.info("written the status info into the output file")
-
-        server_details = ""
-
-        server_details += "SERVER_NAME: " + server_name + new_line
-        server_details += "SERVER_IP: " + server_ip + new_line
-        server_details += "SERVICE: " + service + new_line
-
-
-        active_status = extractActiveStatus(service_status)
-        table_builder.addRow(server_ip,service,active_status)
-
-        image = getImageFromText(service_status,service+".png")
-        logger.info("Got image of service status")
-
-        mail_composer = mail_composer.addImage(image,service+"image",server_details)
+        mail_composer = mail_composer.addImage(image,server_ip+"image",server_ip)
         logger.info("Added image to the mail")
-        
 
-    ssh.close()
-
-    logger.info("Disconnected form "+ server_name)
-
-
+    else:
+        logger.error(f"Type of check is unrecognized (please check for spelling mistakes for {server_ip})")
 
 outputfile.close()
 logger.info("closed the output file")
