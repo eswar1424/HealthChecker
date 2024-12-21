@@ -10,9 +10,13 @@ class MailComposer:
     
     def __init__(self):
         self.msg = MIMEMultipart()
+        self.servers = []
+        self.images = []
+        self.table = None
 
     def addTable(self,table):
-        self.msg.attach(MIMEText(table, 'html'))
+        #self.msg.attach(MIMEText(table, 'html'))
+        self.table = MIMEText(table, 'html')
         return self
 
     def addSubject(self,subject):
@@ -42,17 +46,25 @@ class MailComposer:
         </html>"""
 
         # Attach the HTML content
-        self.msg.attach(MIMEText(html, 'html'))
+        #self.msg.attach(MIMEText(html, 'html'))
+
+        self.servers.append(MIMEText(html, 'html'))
 
         # Embed the image with the unique Content-ID
         image = MIMEImage(image_data, name=image_name)
         image.add_header('Content-ID', f'<{content_id}>')  # Unique Content-ID
         image.add_header('Content-Disposition', 'inline')
-        self.msg.attach(image)
+        self.images.append(image)
+        #self.msg.attach(image)
         return self
 
-    
     def build(self):
+        self.msg.attach(self.table)
+
+        for i in range(len(self.servers)):
+            self.msg.attach(self.servers[i])
+            self.msg.attach(self.images[i])
+            
         return self.msg
     
 
