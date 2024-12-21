@@ -1,3 +1,4 @@
-server_name,ip_address,user_name,password,services
-servername,1.2.3.4,linuxusername,passwordoflinuxuser,"servicename1,servicename2,...,...,servicenameN"
-productionserver1,13.100.200.34,ec2-user,123456789,"chronyd,atd"
+server_name,ip_address,user_name,password,services,type
+servername,1.2.3.4,linuxusername,passwordoflinuxuser,"servicename1,servicename2,...,...,servicenameN",status
+productionserver1,13.100.200.34,ec2-user,123456789,"chronyd,atd",status
+productionserver1,13.100.200.34,ec2-user,123456789,"",space
